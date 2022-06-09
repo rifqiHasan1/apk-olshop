@@ -1,18 +1,29 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, file_names, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:uas/api_service.dart';
 
-class DetailBarang extends StatelessWidget {
+class DetailBarang extends StatefulWidget {
+  final int idBarang;
+  final data;
+  DetailBarang({required this.idBarang, required this.data});
+  @override
+  State<DetailBarang> createState() => _DetailBarangState();
+}
+
+class _DetailBarangState extends State<DetailBarang> {
+  
   @override
   Widget build(BuildContext context) {
+    print(widget.idBarang);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.lightBlue,
+          backgroundColor: Colors.lightBlue,
           title: Text(
-        "Detail",
-        style: TextStyle(fontSize: 20),
-      )),
+            "Detail",
+            style: TextStyle(fontSize: 20),
+          )),
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
@@ -26,8 +37,7 @@ class DetailBarang extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.grey,
                     image: DecorationImage(
-                        image: NetworkImage(
-                            'https://img.freepik.com/free-psd/shopping-bag-mockup_58466-17138.jpg?size=626&ext=jpg&ga=GA1.2.1903224127.1652838851'),
+                        image: NetworkImage(widget.data.fotoBarang),
                         fit: BoxFit.cover)),
                 child: Stack(
                   children: [
@@ -43,7 +53,9 @@ class DetailBarang extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                ApiService().addFavorite(widget.idBarang);
+                              },
                               icon: Icon(
                                 Icons.favorite_border,
                                 color: Colors.red,
@@ -61,13 +73,13 @@ class DetailBarang extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Dresses with wide sleeves",
+                      widget.data.namaBarang,
                       style: TextStyle(
                         fontSize: 20,
                       ),
                     ),
                     Text(
-                      "\$160",
+                      "\$${widget.data.harga}",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -128,27 +140,26 @@ class DetailBarang extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 0, vertical: 18),
+                margin: EdgeInsets.only(top: 30),
                 width: 395,
                 height: 60,
-                child: Material(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.blue,
-                  elevation: 7.0,
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Center(
-                      child: Text(
-                        "Buy Now",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                    ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15))),
+                  onPressed: () {
+                    ApiService().addToCart(widget.idBarang);
+                  },
+                  child: Text(
+                    "Buy Now",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               ),
+
             ],
           ),
         ),
